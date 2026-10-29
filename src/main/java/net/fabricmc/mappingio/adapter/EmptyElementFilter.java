@@ -256,16 +256,20 @@ public class EmptyElementFilter extends ForwardingMappingVisitor {
 			return;
 		}
 
+		boolean relayComment;
+
 		switch (targetKind) {
 		case CLASS:
 			forwardClass = true;
 			classComment = comment;
+			relayComment = forwardedClass && visitClass;
 			break;
 		case FIELD:
 		case METHOD:
 			forwardClass = true;
 			forwardMember = true;
 			memberComment = comment;
+			relayComment = forwardedMember && visitClass && visitMember;
 			break;
 		case METHOD_ARG:
 		case METHOD_VAR:
@@ -273,12 +277,17 @@ public class EmptyElementFilter extends ForwardingMappingVisitor {
 			forwardMember = true;
 			forwardLocal = true;
 			localComment = comment;
+			relayComment = forwardedLocal && visitClass && visitMember && visitLocal;
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown target kind: " + targetKind);
 		}
 
-		forward(targetKind);
+		if (relayComment) {
+			super.visitComment(targetKind, comment);
+		} else {
+			forward(targetKind);
+		}
 	}
 
 	protected void forward(MappedElementKind targetKind) throws IOException {

@@ -1,0 +1,3 @@
+tiny	2	0	source	target
+c	Foo	
+	m	(I)V	method	renamedMethod

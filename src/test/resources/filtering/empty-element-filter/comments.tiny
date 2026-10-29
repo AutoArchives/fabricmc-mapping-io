@@ -1,0 +1,21 @@
+tiny	2	0	source	target
+c	Foo	Bar
+	c	Mapped class comment
+	f	I	field	renamedField
+		c	Mapped field comment
+	m	(I)V	method	renamedMethod
+		c	Mapped method comment
+		p	1	arg	renamedArg
+			c	Mapped argument comment
+		v	2	0	0	var	renamedVar
+			c	Mapped variable comment
+c	Unmapped	
+	c	Unmapped class comment
+	f	I	field	
+		c	Unmapped field comment
+	m	(I)V	method	
+		c	Unmapped method comment
+		p	1	arg	
+			c	Unmapped argument comment
+		v	2	0	0	var	
+			c	Unmapped variable comment

@@ -17,22 +17,51 @@
 package net.fabricmc.mappingio.test.tests.filtering;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
+import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.MappingVisitor;
 import net.fabricmc.mappingio.adapter.EmptyElementFilter;
 import net.fabricmc.mappingio.adapter.FlatAsRegularMappingVisitor;
 import net.fabricmc.mappingio.format.MappingFormat;
+import net.fabricmc.mappingio.format.tiny.Tiny2FileWriter;
 import net.fabricmc.mappingio.test.TestMappings;
 import net.fabricmc.mappingio.test.TestMappings.MappingDir;
+import net.fabricmc.mappingio.test.TestUtil;
 import net.fabricmc.mappingio.test.visitors.SubsetAsserter;
 import net.fabricmc.mappingio.tree.MemoryMappingTree;
 import net.fabricmc.mappingio.tree.VisitableMappingTree;
 
 public class EmptyElementFilterTest {
+	@Test
+	public void preservesComments() throws IOException {
+		checkFilteredMappings("comments.tiny", "comments.tiny");
+	}
+
+	@Test
+	public void dropsEmptyElements() throws IOException {
+		checkFilteredMappings("empty-elements.tiny", "filtered-elements.tiny");
+	}
+
+	private void checkFilteredMappings(String inputFile, String expectedFile) throws IOException {
+		Path resourceDir = TestUtil.getResource("/filtering/empty-element-filter/");
+		String expected = new String(Files.readAllBytes(resourceDir.resolve(expectedFile)), StandardCharsets.UTF_8);
+		StringWriter output = new StringWriter();
+
+		MappingReader.read(resourceDir.resolve(inputFile), MappingFormat.TINY_2_FILE,
+				new EmptyElementFilter(new Tiny2FileWriter(output, false)));
+
+		assertEquals(expected, output.toString());
+	}
+
 	private static <T extends MappingVisitor> T acceptMappings(T visitor) throws IOException {
 		return TestMappings.generateEmptyElementFiltering(visitor);
 	}

@@ -1,0 +1,13 @@
+tiny	2	0	source	target
+c	Empty	
+	f	I	emptyField	
+	m	(I)V	emptyMethod	
+		p	1	emptyArg	
+		v	2	0	0	emptyVar	
+c	Foo	
+	f	I	emptyField	
+	f	I	redundantField	redundantField
+	m	()V	emptyMethod	
+	m	(I)V	method	renamedMethod
+		p	1	emptyArg	
+		v	2	0	0	emptyVar	
